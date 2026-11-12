@@ -1,0 +1,15 @@
+MOTORISTA PRO — versão inicial
+
+Arquivos:
+- index.html: aplicativo
+- manifest.webmanifest: configuração instalável
+- sw.js: cache básico para uso offline depois da primeira visita em hospedagem HTTPS
+
+Para testar:
+1. Extraia o ZIP.
+2. Abra index.html em um navegador compatível para testar.
+3. Para instalar como PWA no Android, hospede os arquivos em um endereço HTTPS (por exemplo, GitHub Pages gratuito).
+4. Abra o endereço no Chrome Android > menu ⋮ > Adicionar à tela inicial / Instalar app.
+
+Os dados são salvos no armazenamento local do navegador do aparelho. Não limpe os dados do navegador sem antes exportar um backup em Relatórios.
+A estimativa de lucro subtrai apenas despesas cadastradas; não inclui depreciação, impostos, taxas ou custos não registrados.

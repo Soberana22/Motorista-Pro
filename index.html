@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101713">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Motorista Pro</title>
+<style>
+:root{color-scheme:dark;--bg:#0c110f;--panel:#151e19;--panel2:#1d2922;--line:#2b3a31;--txt:#eef5ef;--muted:#9eafa3;--green:#69d391;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 18px 14px;background:linear-gradient(140deg,#17271e,#0c110f);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:3}
+h1{font-size:23px;margin:0;font-weight:800;letter-spacing:.2px}header p{margin:4px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;overflow:auto;gap:7px;padding:12px 14px;background:var(--bg);position:sticky;top:77px;z-index:2}
+nav button{white-space:nowrap;background:var(--panel);color:var(--muted);border:1px solid var(--line);padding:9px 12px;border-radius:20px;font-weight:650}
+nav button.active{background:var(--green);color:#07130b;border-color:var(--green)}
+main{padding:4px 14px 35px;max-width:760px;margin:auto}.tab{display:none}.tab.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card,.formbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.metric small{color:var(--muted);display:block;font-size:12px}.metric strong{display:block;font-size:22px;margin-top:5px}.green{color:var(--green)}.red{color:var(--red)}
+h2{font-size:17px;margin:17px 2px 8px}label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0e1511;color:var(--txt);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button.primary{background:var(--green);color:#07130b;border:0;border-radius:11px;padding:12px 15px;font-weight:800;width:100%;margin-top:12px}
+button.secondary,.danger{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.danger{color:var(--red)}.item{border-bottom:1px solid var(--line);padding:10px 0;display:flex;justify-content:space-between;gap:10px}.item:last-child{border:0}
+.muted{color:var(--muted);font-size:12px}.empty{color:var(--muted);text-align:center;padding:18px}
+.kmresult{font-size:25px;font-weight:800;color:var(--green);margin-top:8px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:15px}
+@media(min-width:600px){main{padding-left:22px;padding-right:22px}}
+</style>
+</head>
+<body>
+<header><h1>🚘 Motorista Pro</h1><p>Seu controle de corridas, custos e resultados</p></header>
+<nav id="nav">
+<button class="active" data-tab="inicio">Início</button><button data-tab="corridas">Corridas</button><button data-tab="combustivel">Combustível</button><button data-tab="custos">Manutenção</button><button data-tab="metas">Metas</button><button data-tab="relatorios">Relatórios</button>
+</nav>
+<main>
+<section id="inicio" class="tab active">
+<div class="grid">
+<div class="card metric"><small>Faturamento no mês</small><strong id="mRevenue">R$ 0,00</strong></div>
+<div class="card metric"><small>Lucro estimado no mês</small><strong class="green" id="mProfit">R$ 0,00</strong></div>
+<div class="card metric"><small>Corridas registradas</small><strong id="mTrips">0</strong></div>
+<div class="card metric"><small>Gastos registrados</small><strong id="mCosts">R$ 0,00</strong></div>
+</div>
+<div class="card"><h2 style="margin-top:0">Resumo de hoje</h2><div class="item"><span>Faturamento</span><b id="todayRevenue">R$ 0,00</b></div><div class="item"><span>Lucro estimado</span><b class="green" id="todayProfit">R$ 0,00</b></div><div class="muted">O lucro considera corridas menos combustível e manutenção lançados.</div></div>
+<div class="card"><h2 style="margin-top:0">Análise rápida de corrida</h2><div class="row"><div><label>Valor oferecido (R$)</label><input id="quickFare" type="number" min="0" step=".01" placeholder="18,50"></div><div><label>Distância total (km)</label><input id="quickKm" type="number" min="0" step=".1" placeholder="10"></div></div><div class="kmresult" id="quickResult">R$ 0,00/km</div><div class="muted" id="quickAdvice">Informe valor e distância para avaliar.</div></div>
+</section>
+<section id="corridas" class="tab">
+<h2>Registrar corrida</h2><div class="formbox">
+<div class="row"><div><label>Data</label><input id="tripDate" type="date"></div><div><label>Aplicativo</label><select id="tripApp"><option>Uber</option><option>99</option><option>Particular</option><option>Outro</option></select></div></div>
+<div class="row"><div><label>Valor recebido (R$)</label><input id="tripFare" type="number" min="0" step=".01" placeholder="0,00"></div><div><label>Distância total (km)</label><input id="tripKm" type="number" min="0" step=".1" placeholder="0"></div></div>
+<label>Tempo (minutos) – opcional</label><input id="tripMinutes" type="number" min="0" placeholder="Ex.: 25">
+<button class="primary" id="saveTrip">Salvar corrida</button></div>
+<h2>Histórico de corridas</h2><div class="card" id="tripList"></div>
+</section>
+<section id="combustivel" class="tab">
+<h2>Registrar abastecimento</h2><div class="formbox">
+<div class="row"><div><label>Data</label><input id="fuelDate" type="date"></div><div><label>Combustível</label><select id="fuelType"><option>Gasolina</option><option>Etanol</option><option>Diesel</option><option>GNV</option></select></div></div>
+<div class="row"><div><label>Valor total (R$)</label><input id="fuelCost" type="number" min="0" step=".01"></div><div><label>Litros</label><input id="fuelLiters" type="number" min="0" step=".01"></div></div>
+<label>Odômetro (km) – opcional</label><input id="fuelOdo" type="number" min="0" step="1" placeholder="Quilometragem do painel">
+<button class="primary" id="saveFuel">Salvar abastecimento</button></div>
+<h2>Abastecimentos</h2><div class="card" id="fuelList"></div>
+</section>
+<section id="custos" class="tab">
+<h2>Registrar manutenção ou despesa</h2><div class="formbox">
+<div class="row"><div><label>Data</label><input id="costDate" type="date"></div><div><label>Categoria</label><select id="costType"><option>Manutenção</option><option>Óleo e filtros</option><option>Pneus</option><option>Lavagem</option><option>Seguro</option><option>Outros</option></select></div></div>
+<label>Descrição</label><input id="costDesc" placeholder="Ex.: troca de óleo">
+<label>Valor (R$)</label><input id="costValue" type="number" min="0" step=".01">
+<button class="primary" id="saveCost">Salvar despesa</button></div>
+<h2>Despesas registradas</h2><div class="card" id="costList"></div>
+</section>
+<section id="metas" class="tab">
+<h2>Definir metas</h2><div class="formbox">
+<label>Meta diária de faturamento (R$)</label><input id="dailyGoal" type="number" min="0" step=".01">
+<label>Meta mensal de faturamento (R$)</label><input id="monthlyGoal" type="number" min="0" step=".01">
+<button class="primary" id="saveGoals">Salvar metas</button></div>
+<div class="card"><h2 style="margin-top:0">Progresso de hoje</h2><div id="dailyProgress"></div></div>
+<div class="card"><h2 style="margin-top:0">Progresso do mês</h2><div id="monthlyProgress"></div></div>
+</section>
+<section id="relatorios" class="tab">
+<h2>Relatório semanal e mensal</h2><div class="card" id="reports"></div>
+<button class="secondary" id="exportData">Exportar meus dados (JSON)</button>
+<button class="secondary" id="exportCsv">Exportar corridas (CSV)</button>
+<button class="danger" id="clearData" style="margin-top:12px">Apagar todos os dados</button>
+<p class="muted">Seus registros ficam salvos neste navegador, neste aparelho. Exporte uma cópia regularmente.</p>
+</section>
+</main><footer>Motorista Pro • versão inicial • seus dados ficam no aparelho</footer>
+<script>
+const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10), money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let db=JSON.parse(localStorage.getItem('motoristaProDB')||'{"trips":[],"fuels":[],"costs":[],"goals":{"daily":0,"monthly":0}}');
+function save(){localStorage.setItem('motoristaProDB',JSON.stringify(db));render()}
+function dateInput(id){$(id).value=today()}
+['tripDate','fuelDate','costDate'].forEach(dateInput);
+function month(d){return (d||'').slice(0,7)===today().slice(0,7)}
+function week(d){let x=new Date((d||today())+'T12:00:00'), now=new Date();let start=new Date(now);start.setDate(now.getDate()-((now.getDay()+6)%7));start.setHours(0,0,0,0);let end=new Date(start);end.setDate(start.getDate()+7);return x>=start&&x<end}
+function sum(a,k){return a.reduce((s,x)=>s+(Number(x[k])||0),0)}
+function totals(filter){let t=db.trips.filter(x=>filter(x.date)),f=db.fuels.filter(x=>filter(x.date)),c=db.costs.filter(x=>filter(x.date));let rev=sum(t,'fare'),fuel=sum(f,'cost'),maint=sum(c,'value');return {t,f,c,rev,fuel,maint,cost:fuel+maint,profit:rev-fuel-maint}}
+function render(){
+let m=totals(month),d=totals(x=>x===today()),w=totals(week);
+$('mRevenue').textContent=money(m.rev);$('mProfit').textContent=money(m.profit);$('mTrips').textContent=m.t.length;$('mCosts').textContent=money(m.cost);
+$('todayRevenue').textContent=money(d.rev);$('todayProfit').textContent=money(d.profit);
+$('tripList').innerHTML=list(db.trips,'trip');$('fuelList').innerHTML=list(db.fuels,'fuel');$('costList').innerHTML=list(db.costs,'cost');
+$('dailyProgress').innerHTML=progress(d.rev,db.goals.daily);$('monthlyProgress').innerHTML=progress(m.rev,db.goals.monthly);
+$('reports').innerHTML=`<div class="item"><b>Esta semana</b><span></span></div><div class="item"><span>Faturamento</span><b>${money(w.rev)}</b></div><div class="item"><span>Despesas</span><b>${money(w.cost)}</b></div><div class="item"><span>Lucro estimado</span><b class="green">${money(w.profit)}</b></div><div class="item"><b>Este mês</b><span></span></div><div class="item"><span>Faturamento</span><b>${money(m.rev)}</b></div><div class="item"><span>Combustível</span><b>${money(m.fuel)}</b></div><div class="item"><span>Manutenção e outros</span><b>${money(m.maint)}</b></div><div class="item"><span>Lucro estimado</span><b class="green">${money(m.profit)}</b></div><div class="muted">Estimativa simples: faturamento menos despesas lançadas. Não inclui depreciação, impostos, taxas ou custos não cadastrados.</div>`;
+$('dailyGoal').value=db.goals.daily||'';$('monthlyGoal').value=db.goals.monthly||'';
+}
+function progress(v,g){if(!g)return `<span class="muted">Defina uma meta para acompanhar.</span><p>${money(v)} realizados</p>`;let p=Math.min(100,v/g*100);return `<b>${money(v)} de ${money(g)}</b><div style="height:9px;background:#2b3a31;border-radius:9px;margin:10px 0;overflow:hidden"><div style="height:100%;width:${p}%;background:var(--green)"></div></div><span class="muted">${p.toFixed(0)}% da meta</span>`}
+function list(arr,type){if(!arr.length)return '<div class="empty">Nenhum registro ainda.</div>';return [...arr].reverse().map(x=>{let title=type==='trip'?`${x.app} • ${x.km} km`:type==='fuel'?`${x.type} • ${x.liters||'—'} L`:`${x.type} • ${x.desc||''}`;let val=type==='trip'?x.fare:x.cost??x.value;let sub=type==='trip'?`${(x.km?x.fare/x.km:0).toFixed(2).replace('.',',')} R$/km`:x.date;return `<div class="item"><div><b>${title}</b><div class="muted">${x.date} ${type==='trip'?'• '+sub:''}</div></div><div style="text-align:right"><b>${money(val)}</b><br><button class="danger" onclick="removeItem('${type}','${x.id}')">Excluir</button></div></div>`}).join('')}
+window.removeItem=(type,id)=>{let key=type==='trip'?'trips':type==='fuel'?'fuels':'costs';db[key]=db[key].filter(x=>x.id!==id);save()};
+$('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-tab]');if(!b)return;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));});
+$('quickFare').addEventListener('input',quick);$('quickKm').addEventListener('input',quick);
+function quick(){let f=+$('quickFare').value,k=+$('quickKm').value,r=k?f/k:0;$('quickResult').textContent=money(r)+'/km';$('quickAdvice').textContent=!f||!k?'Informe valor e distância para avaliar.':r>=1.7?'Acima de R$ 1,70/km, seu parâmetro de referência. Avalie também tempo e deslocamento.':'Abaixo de R$ 1,70/km, atenção: pode não compensar.'}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+$('saveTrip').onclick=()=>{let fare=+$('tripFare').value,km=+$('tripKm').value;if(fare<=0||km<=0)return alert('Informe valor e distância maiores que zero.');db.trips.push({id:id(),date:$('tripDate').value,app:$('tripApp').value,fare,km,minutes:+$('tripMinutes').value});$('tripFare').value=$('tripKm').value=$('tripMinutes').value='';save()};
+$('saveFuel').onclick=()=>{let cost=+$('fuelCost').value;if(cost<=0)return alert('Informe o valor do abastecimento.');db.fuels.push({id:id(),date:$('fuelDate').value,type:$('fuelType').value,cost,liters:+$('fuelLiters').value,odo:+$('fuelOdo').value});$('fuelCost').value=$('fuelLiters').value=$('fuelOdo').value='';save()};
+$('saveCost').onclick=()=>{let value=+$('costValue').value;if(value<=0)return alert('Informe um valor maior que zero.');db.costs.push({id:id(),date:$('costDate').value,type:$('costType').value,desc:$('costDesc').value,value});$('costValue').value=$('costDesc').value='';save()};
+$('saveGoals').onclick=()=>{db.goals={daily:+$('dailyGoal').value,monthly:+$('monthlyGoal').value};save();alert('Metas salvas!')};
+function download(name,content,type){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([content],{type}));a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+$('exportData').onclick=()=>download('motorista-pro-backup.json',JSON.stringify(db,null,2),'application/json');
+$('exportCsv').onclick=()=>{let rows=[['data','aplicativo','valor','km','reais_por_km'],...db.trips.map(x=>[x.date,x.app,x.fare,x.km,(x.fare/x.km).toFixed(2)])];download('motorista-pro-corridas.csv',rows.map(r=>r.join(';')).join('\n'),'text/csv;charset=utf-8')};
+$('clearData').onclick=()=>{if(confirm('Tem certeza? Isso apagará todos os registros deste aparelho. Exporte um backup antes.')){db={trips:[],fuels:[],costs:[],goals:{daily:0,monthly:0}};save()}};
+render();quick();
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>

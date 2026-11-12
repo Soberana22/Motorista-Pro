@@ -1,0 +1,9 @@
+{
+  "name": "Motorista Pro",
+  "short_name": "Motorista Pro",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0c110f",
+  "theme_color": "#101713",
+  "description": "Controle pessoal de corridas, ganhos e despesas."
+}
